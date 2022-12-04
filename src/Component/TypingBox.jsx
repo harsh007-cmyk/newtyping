@@ -1,5 +1,6 @@
 import UpperMenu from './UpperMenu';
-import React,{createRef, useEffect,useMemo,useState} from 'react'
+import { Dialog, DialogTitle } from '@material-ui/core';
+import React,{createRef, useEffect,useMemo,useState} from 'react';
 import { useRef } from 'react';
 import { useTestMode } from '../Context/TestMode';
 import Stat from './Stat';
@@ -28,9 +29,10 @@ function TypingBox() {
   const[intervalId,setIntervalId]=useState(null);
   const [graphDatas,setGraphData]=useState([]);
 
+  const [openDialog,setOpenDialogue]=useState(false);
 
   const [wordsArray,setWordArray]=useState(()=>{
-    if(testMode==='words'){
+    if(testMode==='words'){     
       return randomwords(testWords);
     }
     return randomwords(100);
@@ -56,7 +58,24 @@ function TypingBox() {
     wordSpanRef[0].current.childNodes[0].className='char current';
   }  
   
- 
+ const handleDialogEvents=(e)=>{
+  if(e.keyCode===32){
+    e.preventDefault();
+    resetTest();
+    setOpenDialogue(false);
+    return;
+    
+  }
+  if(e.keyCode===9||e.keyCode===13){
+    e.preventDefault();
+    resetTest();
+    setOpenDialogue(false);
+    return;
+  }
+  e.preventDefault();
+  setOpenDialogue(false);
+  typingTimer();
+ }
 
   const typingTimer=()=>{
     const intervalId=setInterval(timer,1000);
@@ -84,6 +103,15 @@ function TypingBox() {
 
 
   const handleKeyDown=(e)=>{
+    
+    if(e.keyCode==9){
+      if(testStart){
+        clearInterval(intervalId);
+      }
+      e.preventDefault();
+      setOpenDialogue(true);
+      return;
+    }
     
       if(!testStart){
         typingTimer();
@@ -215,7 +243,11 @@ const resetTest=()=>{
     let random=randomwords(100);
     setWordArray(random);
   }
-
+  setGraphData([]);
+  setCorrectChars(0);
+  setincorrectChars(0);
+  setMissedChars(0);
+  setExtraChars(0);
   resetWordSpanRefClassNames();
   
 }
@@ -233,7 +265,7 @@ useEffect(()=>{
    
    {(testOver)? (<Stat WPM={calculateWPM()} accuracy={calculateAccuracy()} graphData={graphDatas} correctChars={correctChars} incorrectChars={incorrectChars} extraChars={extraChars} missedChars={missedChars} retest={resetTest}/>):
     (<>
-     <UpperMenu countDown={countDown}/>
+     <UpperMenu countDown={countDown} currentwordIndex={currentwordIndex}/>
     <div className="type-box" onClick={foucusInput}>
     <div className="words">
        {words.map((word,index)=>(
@@ -252,6 +284,28 @@ useEffect(()=>{
     <input type="text" className='hidden-input' ref={inputTextRef}
       onKeyDown={((e)=>handleKeyDown(e))}
     />
+    <Dialog PaperProps={{
+      style:{
+        backgroundColor:'transparent',boxShadow:'none'
+      }
+    }}
+    open={openDialog}
+    onKeyDown={handleDialogEvents}
+    style={{backdropFilter:'blur(2px)'}}
+    >
+        <DialogTitle>
+      <div className="instruction">
+        press Space to redo
+      </div>
+      <div className="instruction">
+        Press Tab/Enter to restart
+      </div>
+      <div className="instruction">
+        Press any other key to exit
+      </div>
+    </DialogTitle>
+    </Dialog>
+    
    </div>
   )
 }

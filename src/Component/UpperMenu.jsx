@@ -1,8 +1,8 @@
 import React from 'react'
 import { useTestMode } from '../Context/TestMode';
 
-function UpperMenu({countDown}) {
-  const {setTestTime,setTestWords,setTestMode,testMode}=useTestMode();
+function UpperMenu({countDown,currentwordIndex}) {
+  const {setTestTime,setTestWords,setTestMode,testMode,testWords}=useTestMode();
 
 const updateTime=(e)=>{
     console.log(e);
@@ -17,7 +17,7 @@ const setMode=(e)=>{
   return (
     <div className="upper-menu">
         <div className="counter">
-            {countDown}
+            {(testMode==='time')?countDown:`${currentwordIndex}/${testWords}`}
         </div>
         <div className="modes">
             <span className="mode" id='time' onClick={(e)=>setMode(e)} style={{paddingRight:'10px'}}>Time</span>

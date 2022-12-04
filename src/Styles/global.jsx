@@ -27,7 +27,7 @@ export const GlobalStyles=createGlobalStyle`
         align-items:center;
     }
     .type-box{
-        background-color:black;
+        background-color:${({theme})=>theme.background};
         display:block;
         max-width:1000px;
         height:150px;
@@ -242,5 +242,8 @@ export const GlobalStyles=createGlobalStyle`
         margin: auto;
         margin-top:3rem;
         transform: scale(2);
+    }
+    .instruction{
+        color: ${({theme})=>theme.title} 
     }
 `
