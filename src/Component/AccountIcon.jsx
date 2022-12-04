@@ -93,8 +93,8 @@ const Logout=()=>{
             style={{backgroundColor:'transparent'}}
             >
                 <Tabs value={value} onChange={handleValueChange} variant='fullWidth'>
-                <Tab label='login' style={{color:theme.title}}></Tab>
-                <Tab label='signup' style={{color:theme.title}}></Tab>
+                <Tab label='login' style={{color:theme.title}}  indicatorColor="secondary"></Tab>  
+                <Tab label='signup' style={{color:theme.title}}  indicatorColor="primary"></Tab>
 
                 </Tabs>
             </AppBar>
